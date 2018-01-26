@@ -14,13 +14,3 @@
 
 
 下面三篇分享包含 CSS篇、 JS篇、VUE篇！如果你感觉对你有帮助，那就请点亮那颗星 ，跪谢！！
-
-[1、CSS篇实用小技巧](CSS篇实用小技巧 "https://github.com/lost-xming/20180125/tree/master/CSS篇实用小技巧")
-
-[2、JS篇之浏览器运行机制](JS篇之浏览器运行机制 "https://github.com/lost-xming/20180125/tree/master/JS篇")
-
-[3、JS之快捷算法](JS之快捷算法 "https://github.com/lost-xming/20180125/tree/master/JS篇/JS之快捷算法")
-
-[4、JS之跨域](JS之跨域 "https://github.com/lost-xming/20180125/tree/master/JS篇/JS之跨域")
-
-[5、VUE篇](5、VUE篇 "https://github.com/lost-xming/20180125/tree/master/vue篇")
