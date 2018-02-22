@@ -340,7 +340,7 @@
 				color-stop(0.75, #D50000),color-stop(0.9, #4096EE), color-stop(1, #FF1A00));
 				color:transparent;-webkit-background-clip:text;font-size:13px;");
 
-### 14、快速的让一个数组乱序
+## 14、快速的让一个数组乱序
 		var arr = [1,2,3,4,5,6,7,8,9,10];
 		arr.sort(function(){
 			return Math.random() - 0.5;
@@ -363,3 +363,143 @@
 当一次排列的 随机数大于0.5 时 将会进行第二次比较， 当第二次随机数 仍然大于0.5 时 ， 将会再 进行一次比较， 直到 随机数大于0.5 或者排列到第一位；
 
 当一次排列的 随机数 小于0.5时 当前比较的两项 索引将不会改变 ，继续下一次 的排列；
+
+
+## 15 vue 父子组件嵌套时，组件内部的各个生命周期钩子触发先后顺序
+首先 我们可以把 子组件当做function函数来看待，当父组件 import 子组件的时候， 就当是声明了 并加载了这个函数，
+在调用的时候才会去执行这个函数（子组件）。那么父子组件中的各个声明周期钩子触发的先后顺序是怎样的呢？
+如下图：
+
+![](http://wwlin.cn/images/vue-fuzizujian.jpg)
+
+下图带222 的 是为子组件，所以一次顺序是为 先创建父组件，然后才穿件子组件，当子组件创建完成并且实体dom挂载完成后父组件才挂载完成
+
+##  15 事件的各个阶段
+
+	1：捕获阶段 ---> 2：目标阶段 ---> 3：冒泡阶段
+
+	由此，addEventListener的第三个参数设置为true和false的区别已经非常清晰了：
+
+	true表示该元素在事件的“捕获阶段”（由外往内传递时）响应事件；
+	
+	false表示该元素在事件的“冒泡阶段”（由内向外传递时）响应事件。
+
+## 16 跨域的几种方式
+
+同源策略/SOP（Same origin policy）是一种约定，由Netscape公司1995年引入浏览器，它是浏览器最核心也最基本的安全功能，如果缺少了同源策略，浏览器很容易受到XSS、CSFR等攻击。所谓同源是指"协议+域名+端口"三者相同，即便两个不同的域名指向同一个ip地址，也非同源。
+
+		1 通过jsonp跨域
+			1.）原生实现：
+			 <script>
+			    var script = document.createElement('script');
+			    script.type = 'text/javascript';
+			
+			    // 传参并指定回调执行函数为onBack
+			    script.src = 'http://www.domain2.com:8080/login?user=admin&callback=onBack';
+			    document.head.appendChild(script);
+			
+			    // 回调执行函数
+			    function onBack(res) {
+			        alert(JSON.stringify(res));
+			    }
+			 </script>
+	
+		2、 document.domain + iframe跨域  
+			此方案仅限主域相同，子域不同的跨域应用场景。
+			1.）父窗口：(http://www.domain.com/a.html)
+	
+				<iframe id="iframe" src="http://child.domain.com/b.html"></iframe>
+				<script>
+				    document.domain = 'domain.com';
+				    var user = 'admin';
+				</script>
+				2.）子窗口：(http://child.domain.com/b.html)
+				
+				<script>
+				    document.domain = 'domain.com';
+				    // 获取父窗口中变量
+				    alert('get js data from parent ---> ' + window.parent.user);
+				</script>
+
+			弊端：请看下面渲染加载优化
+		3、 nginx代理跨域
+		4、 nodejs中间件代理跨域
+		5、 后端在头部信息里面设置安全域名
+
+
+## 17 viewport
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+		// width    设置viewport宽度，为一个正整数，或字符串‘device-width’
+		// device-width  设备宽度
+		// height   设置viewport高度，一般设置了宽度，会自动解析出高度，可以不用设置
+		// initial-scale    默认缩放比例（初始缩放比例），为一个数字，可以带小数
+		// minimum-scale    允许用户最小缩放比例，为一个数字，可以带小数
+		// maximum-scale    允许用户最大缩放比例，为一个数字，可以带小数
+		// user-scalable    是否允许手动缩放
+
+## 18 let var const 
+
+	let 允许你声明一个作用域被限制在块级中的变量、语句或者表达式
+		let绑定不受变量提升的约束，这意味着let声明不会被提升到当前
+		该变量处于从块开始到初始化处理的“暂存死区”。
+
+	var 声明变量的作用域限制在其声明位置的上下文中，而非声明变量总是全局的
+		由于变量声明（以及其他声明）总是在任意代码执行之前处理的，所以在代码中的任意位置声明变量总是等效于在代码开头声明
+		
+	const 声明创建一个值的只读引用 (即指针)
+		这里就要介绍下 JS 常用类型 
+		String、Number、Boolean、Array、Object、Null、Undefined
+		其中基本类型 有 Undefined、Null、Boolean、Number、String，保存在栈中；
+		复合类型 有 Array、Object ，保存在堆中；
+		
+		基本数据当值发生改变时，那么其对应的指针也将发生改变，故造成 const申明基本数据类型时，再将其值改变时，将会造成报错；
+		但是如果是复合类型时，如果只改变复合类型的其中某个Value项时， 将还是正常使用；
+
+## 19 渲染优化
+		1.禁止使用iframe（阻塞父文档onload事件）；
+			*iframe会阻塞主页面的Onload事件；
+			*搜索引擎的检索程序无法解读这种页面，不利于SEO;
+			*iframe和主页面共享连接池，而浏览器对相同域的连接有限制，所以会影响页面的并行加载。
+
+			使用iframe之前需要考虑这两个缺点。如果需要使用iframe，最好是通过javascript
+			动态给iframe添加src属性值，这样可以绕开以上两个问题。
+
+		2.禁止使用gif图片实现loading效果（降低CPU消耗，提升渲染性能）；
+		3、使用CSS3代码代替JS动画（尽可能避免重绘重排以及回流）；
+	    4、对于一些小图标，可以使用base64位编码，以减少网络请求。但不建议大图使用，比较耗费CPU；
+				小图标优势在于：
+				    1.减少HTTP请求；
+				    2.避免文件跨域；
+				    3.修改及时生效；
+
+		5、页面头部的<style></style> 会阻塞页面；（因为 Renderer进程中 JS线程和渲染线程是互斥的）；
+		6、页面头部<script</script> 会阻塞页面；（因为 Renderer进程中 JS线程和渲染线程是互斥的）；
+		7、页面中空的 href 和 src 会阻塞页面其他资源的加载 (阻塞下载进程)；
+		
+		8、网页Gzip，CDN托管，data缓存 ，图片服务器；
+		9、前端模板 JS+数据，减少由于HTML标签导致的带宽浪费，前端用变量保存AJAX请求结果，每次操作本地变量，不用请求，减少请求次数
+		10、用innerHTML代替DOM操作，减少DOM操作次数，优化javascript性能。
+		11、当需要设置的样式很多时设置className而不是直接操作style。
+		12、少用全局变量、缓存DOM节点查找的结果。减少IO读取操作。
+		13、避免使用CSS Expression（css表达式)又称Dynamic properties(动态属性)。
+		14、图片预加载，将样式表放在顶部，将脚本放在底部  加上时间戳。
+
+		15、 避免在页面的主体布局中使用table，table要等其中的内容完全下载之后才会显示出来，显示比div+css布局慢。
+			对普通的网站有一个统一的思路，就是尽量向前端优化、减少数据库操作、减少磁盘IO。
+				向前端优化指的是，在不影响功能和体验的情况下，能在浏览器执行的不要在服务端执行，
+				能在缓存服务器上直接返回的不要到应用服务器，程序能直接取得的结果不要到外部取得，
+				本机内能取得的数据不要到远程取，内存能取到的不要到磁盘取，缓存中有的不要去数据库查询。
+				减少数据库操作指减少更新次数、缓存结果减少查询次数、将数据库执行的操作尽可能的让你的程序完成（例如join查询），
+				减少磁盘IO指尽量不使用文件系统作为缓存、减少读写文件次数等。程序优化永远要优化慢的部分，换语言是无法“优化”的。
+
+
+## 20 怎样处理移动端1px 
+		1 局部处理
+			mate标签中的 viewport属性 ，initial-scale 设置为 1 
+			rem 按照设计稿标准走，外加利用transfrome 的scale(0.5) 缩小一倍即可；
+		2 全局处理
+			mate标签中的 viewport属性 ，initial-scale 设置为 0.5
+			rem 按照设计稿标准走即可
+		
+## 21 箭头函数
+	语法比函数表达式更短，并且不绑定自己的this，arguments，super或 new.target。这些函数表达式最适合用于非方法函数，并且它们不能用作构造函数。
