@@ -475,6 +475,15 @@
 在根目录下创建 lib目录以及 a.js 用以模拟 公共组件
 
 如何才能  require("a") 
+	
+	package.config.js	
+
+	resolve: {
+		modules: [
+			path.join(__dirname, "lib"),
+			"node_modules"
+		]
+	}
 
 
 ## Webpack 1 / 2 / 3 /4 的 区别
