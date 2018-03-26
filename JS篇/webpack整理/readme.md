@@ -199,6 +199,7 @@
 
 	避免在生产中使用 inline-*** 和 eval-***，因为它们可以增加 bundle 大小，并降低整体性能。
  
+	在大多数情况下，cheap-module-eval-source-map 是最好的选择。
 
 ## 观察者模式
 	
@@ -485,6 +486,32 @@
 		]
 	}
 
+	
+**调用模块的几种方式：**
+
+	// ES2015 模块引入
+	import * as webpackNumbers from 'webpack-numbers';
+	// CommonJS 模块引入
+	var webpackNumbers = require('webpack-numbers');
+	// ...
+
+	// ES2015 和 CommonJS 模块调用
+	webpackNumbers.wordToNum('Two');
+	// ...
+
+
+	// AMD 模块引入
+	require(['webpackNumbers'], function ( webpackNumbers) {
+	  // ...
+
+	  // AMD 模块调用
+	  webpackNumbers.wordToNum('Two');
+	  // ...
+
+	});
+
+	
+	全局变量，用户还可以通过 script 标签来加载和使用
 
 ## Webpack 1 / 2 / 3 /4 的 区别
 	
