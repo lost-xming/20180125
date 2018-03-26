@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
 }
-html , body, .slides ,#J_canvas{
+html , body, .slides ,#canvas{
     width: 100%;
     height: 100%;
 }
@@ -37,7 +37,7 @@ html , body, .slides ,#J_canvas{
 .slides_next {
   right: 0;
 }
-#J_canvas_temp {
+#canvas_temp {
   display: none;
 }
 
