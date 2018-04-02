@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./html2canvas.js"></script>
+    <script src="./canvas2image.js"></script>
+    <style>
+        #cns {
+            margin: 100px;
+            background-color: black;
+        }
+        /* #div {
+            width: 300px;
+            height: 300px;
+        } */
+    </style>
+</head>
+<body>
+
+    <canvas width="800" height="800" id="cns"></canvas>
+    <div id="div">
+        12312312312
+    </div>
+    <button id="btn">点击点击</button>
+    <script>
+        var canvas = document.getElementById("cns");
+        var ctx = canvas.getContext("2d");
+        var setNum = 0 ,   // 动画执行次数计数
+            aniStep= 0 ,   // 动画减速时的 减速值
+            rotateBO = 0 , // 减速曲线
+            shang = 0 ;    // 记录 转动的 步伐  当上一次步伐 大于下一次步伐时 表示 动画将开始 反转
+        window.requestAnimationFrame(ani);
+        function ani(){
+            
+            var pro = {
+                "spacing" : 1, // 每一圈的间距 
+                "spacingStep" : 1, // 间距步伐曲线值 由内到外 间距逐渐增大
+                "radian" : 1,  // 每一圈的 弧度差
+                "turns" : 40,  // 总共圈数
+                "sumRadian" : 180,   // 弧度总长   这里先用度数  再次转换
+                "rotateIO": 0,    // 曲线转速 由内到外 80 - 40 
+                "lineWidthStep": 0 , // 线宽 变化步值
+            }
+            
+            if (setNum > 100) {    // 当动画执行次数超过100 转时 将开始 减速 直到停止
+                aniStep  += rotateBO;  // 减速曲线
+                rotateBO += 0.01;     // 减速曲线
+            }
+
+            setNum ++;  // 动画执行次数
+            
+            ctx.clearRect(0,0,800,800); 
+            for(var j = 0 ; j < pro.turns ; j ++) {
+                pro.lineWidthStep = 0;
+
+                if(j > 1) {
+                    pro.rotateIO = (pro.turns -j) / 20;
+                    // console.log(pro.rotateIO *setNum)
+                    maxStep =  pro.rotateIO *setNum*3;
+                }
+                
+
+                pro.spacing += 3;
+                pro.radian = pro.radian + 10;
+
+                for(var i = 1 ; i < pro.sumRadian; i++) {
+                    ctx.beginPath();
+
+                    // 颜色演变规则  由内 ---> 外 由 灰变白    由起始 ---> 终止 由灰变白
+                    ctx.strokeStyle = "rgba("+ (j*5 + parseInt(i/4)) +","+ (j*5 + parseInt(i/4)) +","+ (j*5 + parseInt(i/4)) +")";
+
+                    if(i > pro.sumRadian - 30){ // 尾部 30 度 才开始 变宽 
+                        pro.lineWidthStep = pro.lineWidthStep + 6;
+                        ctx.lineWidth = i/270 + pro.lineWidthStep/100;   //  线宽 需要极可能的 细
+                    }else {
+                        ctx.lineWidth = i/270;
+                    }
+
+                    // 重绘圆弧 的 计算 法则
+                    ctx.arc(400, 400, (50 + j*3 + pro.spacing ), (Math.PI/180)*(i + pro.radian  - 90 + pro.rotateIO *(setNum - aniStep)*3) , (Math.PI/180)*(i+ 1 + pro.radian -90 + pro.rotateIO*(setNum - aniStep)*3), false);
+
+                    ctx.stroke();
+                }
+            }
+
+            //  动画停止规则   当上一次步伐 大于下一次步伐时 表示 动画将开始 反转
+            if (shang > (setNum - aniStep)) {
+                return ; 
+            }else {
+                shang = setNum - aniStep; //记录  上一次 步伐
+                window.requestAnimationFrame(ani);
+            }
+        }
+
+    document.getElementById("btn").addEventListener("click" ,function (){
+        html2canvas(document.querySelector("#div") ).then(canvas => {
+             Canvas2Image.saveAsImage(canvas, 400, 400,"png")
+        });
+    })
+    
+    
+
+    </script>
+</body>
+</html>
