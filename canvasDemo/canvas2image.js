@@ -207,14 +207,16 @@ var Canvas2Image = function () {
 		if ($support.canvas && $support.dataURL) {
 			if (type == undefined) { type = 'png'; }
 			var _type = fixType(type);
+			var fileName = '屏幕截图' + (new Date()).getTime() + '.' + type;
+
 			if (/bmp/.test(_type)) {
 				var data = getImageData(scaleCanvas(canvas, width, height));
 				var strData = genBitmapImage(data);
-				saveFile(makeURI(strData, downloadMime));
+
+				saveFile(makeURI(strData, downloadMime),fileName);
 			} else {
 				var strData = getDataURL(canvas, _type, width, height);
-
-				var fileName = '屏幕截图' + (new Date()).getTime() + '.' + type;
+				
 				saveFile(strData.replace(_type, downloadMime),fileName);
 			}
 		
