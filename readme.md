@@ -6,20 +6,26 @@
 
 > 资料来源于平时的碎部整理,以及社区专题的内容
 
+##整理日志
+
+> 2018-04-04 整理分类
+
 ### 包含项 
 
 > css 样式布局以及细节处理
 > 
 > js ES5/ES6 内置对象的基础应用以及快捷算法
 >
-> webpack 学习整理 主要涉及webpack4.*版本 以及 项目迁移中遇到的问题
+> webpack 学习整理 主要涉及webpack4.*版本 以及 项目迁移中遇到的问题【待续】
 >
 > vue 学习整理 【待续】
 > 
 > nodeJS 学习整理【待续】
 > 
-> H5-canvas demo制作
+> H5-canvas demo制作 canvasDemo && canvasGrayImageDemo
 >
 > 以及综合收录的面试项
-> 
+>
+> 项目基础css和工具类js函数
+
 
