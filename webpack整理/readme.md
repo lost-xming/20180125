@@ -513,6 +513,81 @@
 	
 	全局变量，用户还可以通过 script 标签来加载和使用
 
+
+### webpack4 css插件 ExtractTextWebpackPlugin调整
+
+**建议选用新的CSS文件提取插件mini-css-extract-plugin**
+
+**基本配置如下：**
+
+		const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+		module.exports = {
+		  plugins: [
+		    new MiniCssExtractPlugin({
+		      // Options similar to the same options in webpackOptions.output
+		      // both options are optional
+		      filename: "[name].css",
+		      chunkFilename: "[id].css"
+		    })
+		  ],
+		  module: {
+		    rules: [
+		      {
+		        test: /\.css$/,
+		        use: [
+		          MiniCssExtractPlugin.loader,  // replace ExtractTextPlugin.extract({..})
+		          "css-loader"
+		        ]
+		      }
+		    ]
+		  }
+		}
+
+**生产环境下的配置优化：**
+
+		const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+		const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+		const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+		module.exports = {
+		  optimization: {
+		    minimizer: [
+		      new UglifyJsPlugin({
+		        cache: true,
+		        parallel: true,
+		        sourceMap: true 
+		      }),
+		      new OptimizeCSSAssetsPlugin({})  // use OptimizeCSSAssetsPlugin
+		    ]
+		  },
+		  plugins: [
+		    new MiniCssExtractPlugin({
+		      filename: 'css/app.[name].css',
+		      chunkFilename: 'css/app.[contenthash:12].css'  // use contenthash *
+		    })
+		  ]
+		  ....
+		}
+**将多个css chunk合并成一个css文件**
+
+		
+		const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+		module.exports = {
+		  optimization: {
+		    splitChunks: {
+		      cacheGroups: {
+		        styles: {            
+		          name: 'styles',
+		          test: /\.scss|css$/,
+		          chunks: 'all',    // merge all the css chunk to one file
+		          enforce: true
+		        }
+		      }
+		    }
+		  }
+		}
+
+
+
 ## Webpack 1 / 2 / 3 /4 的 区别
 	
 	一、 Webpack2 VS Webpack1
