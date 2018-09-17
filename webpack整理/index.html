@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>webpack3.*讲解</title>
+    <style>
+        body {
+            font-size: 14px;
+        }
+    
+    </style>
+</head>
+<body>
+    <pre>
+            webpack Loader   将资源进行转换
+
+            webpack 的Loader 执行顺序 是： 从下往上， 从右往左；
+                一个loader 只做一件事， 多个Loader串联起来完成一件事
+        
+                简易loader 
+                    用common.js 的形式 对外暴露一个module.exports 
+                    
+                    Loder 里面的 options 里面  origin 转换成 target信息
+                        内部使用JSON.striongify().replace(options.origin , options.target信息)  并且将转换完成后的内容暴露出去；
+        
+            webpack 的 plugin 做 Loader 做不了的事情；
+        
+                webpack 存在很多构建的生命周期 如 'emit' 等；
+        
+                html 中的 htmlWebapckPlugin
+                    filename : ''  输出文件
+                    template : resolve  模板文件 入口文件
+        
+                    chunks:['js/app' , 'js/muduleB'] 告诉模板我们需要注入哪些东西  其实跟entry一样， 依据 entry 文件名字， 将入口文件 注入进去 自动将生成的hash 文件名迭代进来  (output filename : [name].[hash:6].js )  hash:6 代表6位hash值
+                    
+                    output 中的 publicPath : '/my-path' , 代表打包目录中 引用文件添加公共路径填充， 将HTMl中的引用变为  src : '/my-path/...... .js'
+        
+                    minify :{
+                        html 配置压缩
+                    }
+        
+        
+            webpack 优化开发体验
+        
+                resolve  ( 1 )  三个核心  extensions 、alias 、modules
+                    
+                    extensions: ['.js']    引入外部资源的后缀名 , 以后 引用的外部资源为 .js 文件时，可以不用加后缀；
+        
+                    alias : {
+                        '-' : resolve(__dirname , './comps')  用‘-’ 路径别名 代替 某个目录下面的文件
+                    }
+                    modules : ['node_modules', resolve(__dirname , './my_modules')]  当引入一个库或者一个包的时候 ，首先用 node_modules中 查找，当找不到的时候， 会在my_modules 中找； 其实和路径别名 很像；
+        
+            style sheet 样式分离 通过传统的Link的方式引用
+                Extract-text-plugin 通过插件将js 、css 分离出来
+        
+        
+        
+            开发环境的搭建： dev-server
+                devser : {
+                    contentBase : resolve (__dirname , 'dist'),               当前的输出目录底下， 寻找我们想要加载的资源
+                    port:9000,         输出端口号
+                    hot: true           热更新开启
+                }
+        
+                plugin ：[
+                    new webpack.HotModuleReplacementPlugin(),    显示的调用下这个插件
+                ]
+                
+                index.js 文件中（入口文件） 很多人忽略的地方
+        
+                    if ( module.hot ) {
+                        module.hot.accept();
+                    }
+        
+        
+            上线代码优化:  
+                tree shaking 去除无用代码
+                
+                插件：  uglifyjs-webpack-plugin
+        
+                plugin : [      显示的调用
+                    new UglifyPlugin()
+                ]
+        
+        
+        
+            scripts: {  调用方式的区分
+        
+                通过 node_modules 指定config 文件的方式运行代码 类似于webpack—cli 方式
+        
+                    'node_modules/.bin/webpack --config ./2-loaders/webpack.config.js'
+        
+                    直接暴露webpack 对象
+        
+                通过Node api 的方式来 启动文件 ，比较大的工程中运用
+        
+                    'build:12' : 'node ./12-node-api/build.js'
+                    'dev:12' : 'node ./12-node-api/dev.js'
+        
+                    需要修改build.js 文件  并不会直接暴露出去webpack对象
+            }
+        
+        
+        
+            extrnals : 自定义应用库处理
+                
+                当我们想写一个自己定义的库， 但又应用了其他的公共库， 打包的时候并不想将其打包进来
+        
+                配置项： 
+                    output : {
+                        library : 'myLib',  打包的库的名字
+                        libraryTarget : 'umd'   不同的打包方案    es6  umd  var 等等（通用库还是建议umd）
+                    },
+        
+                    externals : {
+                        moduleExt : resolve(__dirname , './目录结构')
+                    }
+        
+            代码分割：
+        
+                    CommonsChunkPlugin /  DIIPlugin  /  DIIReferencePlugin  三个plugin webpack4.* 已经废弃这些
+        
+                    hash 与 chunkhash的区别   chunkhash 是根据内容的更改而改变的hash值，当文件内容没有改变时 ，则不会发生变化
+        
+        
+        
+            webpack-merge : 多个配置文件， 公共的配置文件和开发环境配置文件已经生产环境的配置文件
+        
+                    basic.js  dev.js  build.js ....
+        
+                    通过 require引入basic.js配置文件，再通过webpackMerge钩子 合并 两个配置文件
+        
+
+    </pre>
+</body>
+</html>
